@@ -1,0 +1,27 @@
+{
+  "name": "report",
+  "version": "1.0.0",
+  "description": "## 書ける内容",
+  "main": "index.js",
+  "scripts": {
+    "yarn": "yarn",
+    "build": "node ./build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RitsCompilerConstruction/Report.git"
+  },
+  "author": "0918nobita",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RitsCompilerConstruction/Report/issues"
+  },
+  "homepage": "https://github.com/RitsCompilerConstruction/Report#readme",
+  "devDependencies": {
+    "yarn": "^1.9.2"
+  },
+  "dependencies": {
+    "markdown-pdf": "^9.0.0"
+  }
+}
