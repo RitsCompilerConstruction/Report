@@ -2,18 +2,7 @@
 
 ## 書き方
 
-``npm``, ``yarn``, ``markdown-pdf`` を用いて、コマンドを1回実行するだけで単一の PDF を生成できるように設定してあります。
-
-書き始める前に、環境構築が必要です。
-
-```bash
-$ pip install pypdf2
-$ git clone https://github.com/RitsCompilerConstruction/Report.git
-$ cd Report
-$ npm i
-```
-
-上のコマンドを実行すると環境構築が完了します。
+Visual Studio Code の ``Markdown PDF`` と ``vscode-pdf`` を使用してPDFを生成・結合してください。
 
 ## 書ける内容
 
