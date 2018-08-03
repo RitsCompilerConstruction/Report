@@ -7,6 +7,7 @@
 書き始める前に、環境構築が必要です。
 
 ```bash
+$ pip install pypdf2
 $ git clone https://github.com/RitsCompilerConstruction/Report.git
 $ cd Report
 $ npm i

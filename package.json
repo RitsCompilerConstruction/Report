@@ -22,6 +22,7 @@
     "yarn": "^1.9.2"
   },
   "dependencies": {
-    "markdown-pdf": "^9.0.0"
+    "markdown-pdf": "^9.0.0",
+    "pdfmerge": "^1.0.1"
   }
 }
