@@ -21,7 +21,7 @@
 </head>
 <body>
   <div id="cover">
-    <p>2018 年度前期プロジェクト活動<br>Ritsumeikan Compiler Construction 班<br>活動報告書</p>
+    <p>2018年度 前期 プロジェクト活動<br>Ritsumeikan Compiler Construction 班<br>活動報告書</p>
   </div>
 </body>
 <html>
