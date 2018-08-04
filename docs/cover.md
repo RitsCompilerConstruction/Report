@@ -21,7 +21,7 @@
 </head>
 <body>
   <div id="cover">
-    <p>2018年度 前期 プロジェクト活動<br>Ritsumeikan Compiler Construction 班<br>活動報告書<br><br>松本幸大 西見元希 青木雅典</p>
+    <p>2018年度 前期 プロジェクト活動<br>Ritsumeikan Compiler Construction 班<br>活動報告書<br><br>佐々木章徳 青木雅典 西見元希 松本幸大</p>
   </div>
 </body>
 <html>
