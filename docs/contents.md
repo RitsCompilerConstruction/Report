@@ -15,8 +15,8 @@ body {
   3.4 主なデータ型とリテラル  
   3.5 関数定義, パターンマッチング, if, 相互再帰/高階関数, 関数式, 部分適用, 中置演算子  
   3.6 リスト操作関数, リストの畳み込み  
-  3.7 datatype 宣言, 型シノニム, 抽象データ型, 標準のデータ型  
-  3.8 参照型, 評価順序, 例外処理  
+  3.7 データ型の定義  
+  3.8 命令型言語の機能  
   3.9 モジュール, ストラクチャ, シグネチャ, シグネチャ制約の透明性, ファンクタ
 4. コンパイラの構成  
   3.1 字句解析器  
@@ -483,11 +483,77 @@ val it = [1, 3, 5] : int list
 
 ### リストの畳み込み
 
-## 3.7 datatype 宣言, 型シノニム, 抽象データ型, 標準のデータ型
+``foldr`` は, 二項演算子を使って右からリストを畳み込む関数である. 二項演算子を ＋ とすると, 式 ``foldr ＋ 0 [1, 2, 3]`` は ``1＋(2＋(3＋0))`` と展開される.
+
+```sml
+- foldr (op +) 0 [1, 2, 3];  (* 3 + (2 + (1 + 0)) = 6 *)
+val it = 6 : int
+- foldr (op -) 0 [1, 2, 3];  (* 3 - (2 - (1 - 0)) = 2 *)
+val it = 2 : int
+```
+
+畳み込み関数は, リスト操作関数の実装によく用いられる. 例えば, map 関数は foldr を使って以下のように書くこともできる.
+
+```sml
+- fun map' f = foldr (fn (x, s) => f x :: s) nil;
+val map' = fn : ('a -> 'b) -> 'a list -> 'b list
+- map' (fn x => x * x) [1, 2, 3, 4, 5];
+val it = [1, 4, 9, 16, 25] : int list
+```
+
+## 3.7 データ型の定義
+
+### datatype 宣言
+
+&emsp;次のプログラムは, 長方形の大きさを表す rectangle 型と, 長方形の面積を求める area 関数を定義したものである.
+
+```sml
+- datatype rectangle = RECT of real * real;
+datatype rectangle = RECT of real * real
+- fun area (RECT (w, h)) = w * h;
+val area = fn : rectangle -> real
+- val r = RECT (3.0, 4.0);
+val r = RECT (3.0, 4.0) : rectangle
+- area r;
+val it = 12.0 : real
+```
+
+``datatype`` キーワードで始まる宣言により, 新しいユーザー定義型を定義できる. ``datatype`` 宣言で定義されるデータ型は, **代数的データ型** (algebraic data type) と呼ばれる.
+
+この例で定義されている ``rectangle`` は**型構成子** (type constructor), ``RECT`` は**値構成子** (value constructor) と呼ばれる. 型構成子と値構成子には, 同じ名前を用いることもできる.
+
+一つの型に複数の値構成子を定義することもできる. 次のプログラムは, 円または長方形を表す ``shape`` 型を定義したものである.
+
+```sml
+- datatype shape = CIRC of real
+                 | RECT of real * real
+datatype shape = CIRC of real | RECT of real * real
+- fun area (CIRC r) = 3.14 * r * r
+    | area (RECT (w,h)) = w * h;
+val area = fn : shape -> real
+- val c = CIRC 2.0;
+val c = CIRC 2.0 : shape
+- area c;
+val it = 12.56 : real
+```
+
+### 型シノニム
 
 &emsp;
 
-## 3.8 参照型, 評価順序, 例外処理
+### 抽象データ型
+
+&emsp;
+
+### 標準のデータ型
+
+&emsp;
+
+## 3.8 命令型言語の機能
+
+&emsp;
+
+## 3.9 モジュールシステム
 
 &emsp;
 
