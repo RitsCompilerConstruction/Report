@@ -284,7 +284,26 @@ fun power x y = x * power x (y - 1)
 
 ### パターンマッチング
 
-&emsp;
+&emsp;これまでの説明で既に使用しているが, パターンには, 変数や整数リテラルの他に, タプルやリスト, レコードも書くことができる.
+
+```sml
+- fun length nil = 0
+    | length (x::xs) = 1 + length xs;
+val length = fn : 'a list -> int
+- length [1, 2, 3, 4, 5];
+val it = 5 : int
+```
+
+&emsp;次の例のように, 興味のない部分にはワイルドカードと呼ばれるパターン ``_`` を使うこともできる.
+
+```sml
+- fun second (_, y) = y;
+val second = fn : 'a * 'b -> 'a
+- second (123, "abc");
+val it = "abc" : string
+```
+
+&emsp;パターンは, ``val`` 宣言の左辺に使うこともできる. 
 
 ## 3.6 リスト操作関数, リストの畳み込み
 
