@@ -406,7 +406,18 @@ val addTwo = fn : int -> int
 val it = 5 : int
 ```
 
-関数適用は左結合であるため, 例えば式 ``add 2 3`` は ``(add 2) 3`` のように評価される. ここで ``add 2`` は add 関数の**部分適用** (partial application) と呼ばれ, ``int -> int`` 型を持つ. addTwo 関数は, add 関数の部分適用を利用して定義されている.
+&emsp;関数適用は左結合であるため, 例えば式 ``add 2 3`` は ``(add 2) 3`` のように評価される. ここで ``add 2`` は add 関数の**部分適用** (partial application) と呼ばれ, ``int -> int`` 型を持つ. addTwo 関数は, add 関数の部分適用を利用して定義されている.
+
+&emsp;関数の部分適用を考慮すると, add 関数の型は ``int -> (int -> int)``, すなわち, 引数が ``int`` 型で, 戻り値が ``int -> int`` 型である関数の型と見ることができる.
+
+&emsp;今回の add 関数のように部分適用の可能な関数は, カリー化された関数 (curried function) という. 逆に, 次に示す add' 関数のような関数は, 非カリー化された関数という.
+
+```sml
+- fun add' (x, y) = x + y;
+val add' = fn : int * int -> int
+- add' (2, 3);
+val it = 5 : int
+```
 
 ### 中置演算子
 
