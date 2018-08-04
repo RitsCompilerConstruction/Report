@@ -333,6 +333,21 @@ val it = 5 : int
 
 ### 相互再帰関数
 
+&emsp;次のプログラムでは, 引数が偶数のときに真を返す関数 ``even`` と, 引数が奇数のときに真を返す ``odd`` を定義している.
+
+```sml
+- fun even 0 = true
+    | even n = odd (n - 1)
+  and odd 0 = false
+    | odd n = even (n - 1);
+val even = fn : int -> bool
+val odd = fn : int -> bool
+- even 2;
+val it = true : bool
+```
+
+相互再帰的な関数は, 互いが互いを参照し合えるように, 1 つの fun 宣言の中に記述する必要がある. そのために, この例のように ``and`` キーワードを用いる.
+
 ### 高階関数
 
 ### 関数式
