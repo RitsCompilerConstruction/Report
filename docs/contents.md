@@ -350,6 +350,22 @@ val it = true : bool
 
 ### 高階関数
 
+&emsp;関数を引数や戻り値に持つ関数は**高階関数**と呼ばれる. 以下に示す ``map`` 関数が, 標準で定義されている高階関数の代表的な例である.
+
+```sml
+- fun square x = x * x;
+val square = fn : int -> int
+- map square [1, 2, 3, 4, 5];
+val it = [1, 4, 9, 16, 25] : int list
+```
+
+&emsp;関数 ``map`` の定義は, 例えば以下のように書くことができる.
+
+```sml
+fun map f nil = nil
+  | map f (x::xs) = f x :: map f xs
+```
+
 ### 関数式
 
 ### 部分適用
