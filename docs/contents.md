@@ -716,23 +716,262 @@ val it = [2, 4, 6, 8] : int list
 
 ### ストラクチャ
 
-&emsp;
+&emsp;次のプログラムは, 連想リスト (alist) を実現するストラクチャ Alist を記述したものである. このストラクチャでは, 1 つの例外, 3 つのデータ型, 4 つの関数を定義している.
+
+```sml
+(* file: alist1.sml *)
+
+(* ストラクチャ Alist の定義 *)
+structure Alist =
+struct
+  exception AlistExn
+
+  type tkey = int                  (* キーの型 *)
+  type tval = string               (* 値の型 *)
+  type alist = (tkey * tval) list  (* 連想リストの型 *)
+
+  (* 新規リストを作成 *)
+  fun new () = nil : alist
+
+  (* 要素を追加 (キーが重複していれば例外発生) *)
+  fun add (k,v) ls = if exists k ls then raise AlistExn else (k,v)::ls
+
+  (* キー key が存在すれば true *)
+  and exists key [] = false
+    | exists key ((k,v)::ls) = k = key orelse exists key ls
+
+  (* キー key に対応する値を返す *)
+  fun find key [] = raise AlistExn
+    | find key ((k,v)::ls) = if k = key then v else find key ls
+end
+```
+
+これを対話環境に読み込んで, 動作を確認する
+
+```sml
+- use "alist1.sml";
+- open Alist;
+- val ls = new ();
+val ls = [] : alist
+- val ls = add (1, "one") ls;
+val ls = [(1, "one")] : (tkey * string) list
+- val ls = add (2, "two") ls;
+val ls = [(1, "one"), (2, "two")] : (tkey * string) list
+- find 1 ls;
+val it = "one" : string
+- find 2 ls;
+val it = "two" : string
+- find 3 ls;
+uncaught exeception AlistExn
+ raised at: alist1.sml:22.27-22.35
+```
+
+``structure`` から ``end`` までは**ストラクチャ式**と呼ばれ, この中には関数宣言や型宣言などの様々な宣言を記述できる (これ以外の形式のストラクチャ式も存在する) . ``structure ストラクチャ名 = ストラクチャ式`` という形の宣言を記述する.
 
 ### シグネチャ
 
-&emsp;
+対話環境でストラクチャの宣言を行うと, 次のように出力されることが確認できる.
+
+```sml
+- use "alist1.sml";
+[opening alist1.sml]
+structure Alist :
+  sig
+    exception AlistExn
+    type tkey = int
+    type tval = string
+    type alist = (tkey * tval) list
+    val new : unit -> alist
+    val add : ''a * 'b -> (''a * 'b) list -> (''a * 'b) list
+    val exists : ''a -> (''a * 'b) list -> bool
+    val find : ''a -> (''a * 'b) list -> 'b
+  end
+val it = () : unit
+```
+
+``sig`` から ``end`` までがストラクチャ Alist の**シグネチャ** (Signature) である. シグネチャには, ストラクチャで公開される名前に関する情報が記述される. 独自のシグネチャを定義することで, ストラクチャで公開される名前を選択することができる.
+
+次のプログラムは, 独自のシグネチャ ALIST を定義した例である. ストラクチャ Alist には ALIST によるシグネチャ制約を加えている. これによって, シグネチャに記述されていない名前 exists がストラクチャの外部には非公開となり, 隠蔽される.
+
+```sml
+(* file: alist2.sml *)
+
+(* シグネチャ ALIST の定義 *)
+signature ALIST =
+sig
+  exception AlistExn
+  eqtype tkey
+  type tval
+  type alist
+  val new : unit -> alist
+  val add : tkey * tval -> alist -> alist
+  val find : tkey -> alist -> tval
+end
+
+(* ストラクチャ Alist の定義 *)
+structure Alist : ALIST =  (* シグネチャ制約を付加 *)
+struct
+  (* alist1 と同じ *)
+end
+```
+
+``sig`` から ``end`` まではシグネチャ式と呼ばれ, この中に公開すべきストラクチャの仕様を記述する. シグネチャに名前をつけるには, ``signature シグネチャ名 = シグネチャ式`` という形の宣言を記述する.
+
+対話環境でこのプログラムを読み込むと, 以下のように出力される.
+
+```sml
+- use "alist2.sml";
+[opening alist2.sml]
+signature ALIST =
+  sig
+    exception AlistExn
+    eqtype tkey
+    type tval
+    type alist
+    val new : unit -> alist
+    val add : tkey * tval -> alist -> alist
+    val find : tkey -> alist -> tval
+  end
+structure Alist : ALIST
+val it = () : unit
+```
+
+出力されるシグネチャに名前 ``exists`` が現れていないことが確認できる. ( ``Alist.exist 1 ls`` を評価させるとエラーが発生する)
 
 ### シグネチャ制約の透明性
 
-&emsp;
+ストラクチャのシグネチャ制約に用いる ``:`` を ``:>`` に置き換えると, シグネチャ制約の透明性を変更できる. ``:`` による制約は**透明な**制約 (transparent constraint), ``:>`` による制約は不透明な制約 (opaque constraint) と呼ぶ. 
+
+```sml
+(* file: alist3.sml *)
+
+signature ALIST =
+sig
+  (* alist2 と同じ *)
+end
+
+structure Alist :> ALIST =  (* 不透明なシグネチャ制約 *)
+struct
+  (* alist2 と同じ *)
+end
+```
+
+これを対話環境で読み込むと, 以下のように式を評価させる.
+
+```sml
+- use "alist3.sml";
+- val ls = Alist.new ();
+val ls = - : Alist.alist
+```
+
+透明な制約では連想リストの中身が表示され, 連想リストの実装が通常のリストであることがわかる形になっているが, 不透明な制約を用いることで, alist 型の実体を隠蔽することに成功している. ただし, この例の不透明なシグネチャ制約は他の型の実体も隠蔽するため, ``tkey`` 型と ``int`` 型, ``tval`` 型と ``string`` 型を同じ型と見なさなくなる. これを解決するには, 次のように ``where type`` で始まる記述を追加し, 選択的に型の実体を公開する. なお, この記述はシグネチャ式の直後に置くことができる.
+
+```sml
+(* file: alist4.sml *)
+
+signature ALIST =
+sig
+  exception AlistExn
+  eqtype tkey
+  type tval
+  type alist
+  val new : unit -> alist
+  val add : tkey * tval -> alist -> alist
+  val find : tkey -> alist -> tval
+end
+  where type tkey = int      (* tkey は int と同じだよ *)
+  where type tval = string   (* tval は string と同じだよ *)
+
+structure Alist :> ALIST =   (* 不透明なシグネチャ制約 *)
+struct
+  (* alist2 と同じ *)
+end
+```
+
+対話環境での実行結果は以下の通りである. ``alist`` 型の実体が隠蔽されつつ, ``tkey``, ``tval`` 型が適切に実行環境に認識されていることが分かる.
+
+```sml
+- use "alist4.sml";
+...
+
+- val ls = Alist.new ();
+val ls = - : Alist.alist
+
+- val ls = Alist.add (1, "one") ls;
+val ls = - : Alist.alist
+
+- val ls = Alist.find 1 ls;
+val ls = "one" : Alist.tval
+```
 
 ### ファンクタ
 
-&emsp;
+これまで見てきた Alist ストラクチャでは，tkey は int，tval は string に固定されていた. 次はこれらをパラメータ化し, tkey と tval に任意の型をとることができるようにする.
+
+ファンクタ (Functor) はストラクチャにパラメータを持たせたものである. 以下の例では, 2 つのパラメータを持つファンクタ Alist を定義している.
+
+```sml
+(* file: alist5.sml *)
+
+(* シグネチャ ALIST の定義 *)
+signature ALIST =
+sig
+  exception AlistExn
+  eqtype tkey
+  type tval
+  type alist
+  val new : unit -> alist
+  val add : tkey * tval -> alist -> alist
+  val find : tkey -> alist -> tval
+end
+
+(* ファンクタ Alist の定義 *)
+functor Alist (eqtype tk type tv)
+  :> ALIST                 (* 不透明なシグネチャ制約 *)
+  where type tkey = tk     (* tkey は tk と同じだよ *)
+  where type tval = tv  =  (* tval は tv と同じだよ *)
+struct
+  exception AlistExn
+
+  type tkey = tk
+  type tval = tv
+  type alist = (tkey * tval) list
+
+  fun new () = nil
+
+  fun add (k,v) ls = if exists k ls then raise AlistExn else (k,v)::ls
+
+  and exists key [] = false
+    | exists key ((k,v)::ls) = k = key orelse exists key ls
+
+  fun find key [] = raise AlistExn
+    | find key ((k,v)::ls) = if k = key then v else find key ls
+end
+
+(* ファンクタからストラクチャを生成 *)
+structure IntStrAlist = Alist (type tk = int type tv = string)
+```
+
+ファンクタの宣言は, ``structure`` の代わりに ``structure`` が使われることと, ファンクタ名の直後にパラメータリストが入ること以外は, 基本的にストラクチャの宣言と同じである. ファンクタ名の直後の括弧 ``(`` … ``​)`` の中には ``sig`` …​ ``end`` の中に書けるものと同じものを書くことができ, これがパラメータリストの役割を果たす.
+
+ファンクタからストラクチャを生成するには, ``Alist (type tk = int type tv = string)`` のように, ファンクタ名に続いて括弧の中に宣言を記述する. この括弧の中には ``struct`` … ​``end`` の中に書けるものと同じものを書くことができる.
+
+このプログラムを対話環境で動かすと, 以下のようになる.
+
+```sml
+- use "alist5.sml";
+- open IntStrAlist;
+- val ls = new ();
+val ls = - : alist
+- val ls = add (1, "one") ls;
+val ls = - : alist
+- find 1 ls;
+val it = "one" : tval
+```
 
 # 4. コンパイラの構成
 
-&emsp;
+&emsp;Standard ML の基本文法と言語機能についての勉強会を数回行なった後, コンパイラの構成を学ぶための勉強会を行った.そこで得られた知見を以下にまとめる.
 
 ## 4.1 字句解析器
 
