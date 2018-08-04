@@ -190,7 +190,7 @@ val it = "abcdef\n" : string
 
 &emsp;<b>タプル</b> (tuple) は, 複数の値を組にしたものである. 例えば, 整数 ``123`` と文字列 ``"abc"`` のタプルは ``(123, "abc")`` のように書き, その型は ``int * string`` と書く.
 
-&emsp;タプルの n (>= 1) 番目の要素を取り出すには ``#n`` という関数を利用する.
+&emsp;タプルの n (≥ 1) 番目の要素を取り出すには ``#n`` という関数を利用する.
 
 ```sml
 - (123, (456, "abc"));
@@ -537,17 +537,47 @@ val c = CIRC 2.0 : shape
 val it = 12.56 : real
 ```
 
+次のプログラムでは, 曜日を表すデータ型 dayOfWeek を宣言したものである. このように, 引数のない値構成子のみからなるデータ型は, 特に**列挙型** (**enum**erated type) と呼ばれる.
+
+```sml
+- datatype dayOfWeek = SUM | MON | TUE | THU | FRI | SAT;
+datatype dayOfWeek = FRI | MON | SAT | SUN | THU | TUE | WED
+- fun isHoliday SAT = true
+    | isHoliday SUN = true
+    | isHoliday _ = false;
+val isHoliday = fn : dayOfWeek -> bool
+- isHoliday MON;
+val it = false : bool
+```
+
+次のプログラムは, リスト型を模した型を宣言したものである. このように, 型引数を導入して多相型を構成することもできる.
+
+```sml
+- datatype 'a list' = NIL | CONS of 'a * 'a list';
+datatype 'a list' = CONS of 'a * 'a list' | NIL
+
+- fun length' NIL = 0
+    | length' (CONS (x, xs)) = 1 + length' xs;
+val length' = fn : 'a list' -> int
+
+- length' (CONS(1, CONS(2, CONS(3, NIL))));  (* length [1,2,3] 相当 *)
+val it = 3 : int
+```
+
 ### 型シノニム
 
-&emsp;
+&emsp;存在するデータ型に別名を与えるには, 以下のように type 宣言を用いる.
+
+```sml
+- type 'a collection = 'a list;
+type 'a collection = 'a list
+```
 
 ### 抽象データ型
 
-&emsp;
+&emsp;値構成子が隠蔽された型を**抽象データ型** (abstract data type) という. これを用いて, ユーザーに対してデータへのアクセス手段のみを提供することができる.
 
-### 標準のデータ型
-
-&emsp;
+&emsp;次のプログラムは, スタックを表すデータ型 ``'a stack`` と, スタックを操作する関数群を宣言したものである. このプログラムでは, ``'a stack`` を抽象データ型として宣言している.
 
 ## 3.8 命令型言語の機能
 
