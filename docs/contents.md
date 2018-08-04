@@ -305,6 +305,42 @@ val it = "abc" : string
 
 &emsp;パターンは, ``val`` 宣言の左辺に使うこともできる. 
 
+```sml
+- val (a, b) = (123, "abc");
+val a = 123 : int
+val b = "abc" : string
+```
+
+&emsp;``case`` 式を用いて, 式の中でパターンマッチを行うこともできる.
+
+```sml
+- fun length xs =
+    case xs of nil => 0
+             | x::xs => 1 + length xs;
+val length = fn : 'a list -> int
+```
+
+### if 式
+
+パターンではなく論理式によって場合分けする場合には, ``if`` 式を用いる. あくまで式なので値を持つ. そのため, 「``then`` 式」「``else`` 式」のどちらも省略できない.
+
+```sml
+- fun abs x = if x < 0 then ~x else x;
+val abs = fn : int -> int
+- abs ~5;
+val it = 5 : int
+```
+
+### 相互再帰関数
+
+### 高階関数
+
+### 関数式
+
+### 部分適用
+
+### 中置演算子
+
 ## 3.6 リスト操作関数, リストの畳み込み
 
 &emsp;
