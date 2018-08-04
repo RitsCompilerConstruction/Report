@@ -53,13 +53,13 @@ body {
 
 &emsp;mlton と smlnj は、どちらも apt, pacman, brew といったパッケージ管理システム経由で導入が可能である. このプロジェクト活動においては, macOS 環境では brew 経由で, Ubuntu 環境では apt 経由で, Arch linux 環境では pacman 経由で導入した.
 
-## 3.3 式の評価, 束縛, 関数, コメント, ファイル
+## 3.3 式の評価と束縛, 関数, コメント, ファイル
 
 ### 式の評価と束縛
 
 &emsp;smlnj は sml コマンドで起動する. 式を入力して改行すれば評価される. 複数行に渡る構文で記述している場合, 改行して入力を続けることができる.
 
-```
+```sml
 - 2 * 3 + 4 * 5;
 val it = 26 : int
 - it - 20;
@@ -74,14 +74,14 @@ val it = 6 : int
 
 &emsp;以下で, 2 つの int 型データを渡して和を得る add 関数を, 2 種類の方法で定義する.
 
-```
+```sml
 - fun add (x: int) (y: int): int = x + y;
 val add = fn : int -> int -> int
 - add 1 2;
 val it = 3 : int
 ```
 
-```
+```sml
 - fun add x y = x + y;
 val add = fn : int -> int -> int
 - add 1 2;
@@ -92,15 +92,13 @@ val it = 3 : int
 
 ### コメント
 
-&emsp;コメントは (* から *) までの間に記述する. ネスト可能. 
-
-```
+```sml
 (* コメントは (* ネスト可能 *) *)
 ```
 
 ### ファイル
 
-```text
+```sml
 (* file: test1.sml *)
 fun add x y = x + y
 val m = 2
@@ -109,7 +107,7 @@ val n = 3
 
 &emsp;上の内容のソースコードを, ``test1.sml`` という名前で保存する.
 
-```
+```sml
 - use "test1.sml";
 [opening test1.sml]
 val add = fn : int -> int -> int
@@ -149,7 +147,7 @@ val it = 9 : int
 
 &emsp;論理値の値は true または false である. 論理型データの演算に用いる演算子として, not (否定), andalso (論理積), orelse (論理和) が挙げられる.
 
-```
+```sml
 - not true;
 val it = false : bool
 - it orelse true;
@@ -160,7 +158,7 @@ val it = true : bool
 
 &emsp;数値型の演算には ~ (単項マイナス), + (加算), - (減算), * (乗算), abs (絶対値) などを用いることができる. 除算演算子には / (real 型用) と div (int, word 型用) の 2 種類がある. 剰余演算子は mod で, int 型と word 型で利用できる.
 
-```
+```sml
 - 2 * 3;
 val it = 6 : int
 - ~ it;
@@ -181,15 +179,40 @@ val it = 1 : int
 
 ### 文字型/文字列型
 
-&emsp;
+&emsp;``\n`` のようなエスケープシーケンスが利用できる. また, 文字列の連結には ``^`` 演算子を用いる.
+
+```sml
+- "abc" ^ "def\n"
+val it = "abcdef\n" : string
+```
 
 ### タプル型/ユニット型
 
-&emsp;
+&emsp;<b>タプル</b> (tuple) は, 複数の値を組にしたものである. 例えば, 整数 ``123`` と文字列 ``"abc"`` のタプルは ``(123, "abc")`` のように書き, その型は ``int * string`` と書く.
+
+&emsp;タプルの n (>= 1) 番目の要素を取り出すには ``#n`` という関数を利用する.
+
+```sml
+- (123, (456, "abc"));
+val it = (123, (456, "abc")) : int * (int * string)
+- #1 (#2 it);
+val it = 456 : int
+```
+
+&emsp;<b>ユニット</b> (unit) は, 要素数が 0 のタプルで表現される. ユニット型の唯一の値は ``()`` であり, 型名は ``unit`` である. ユニット型は, 例えば, 意味のある値を返さない関数の戻り値の型として用いられる. 文字列を出力する print 関数の戻り値の型はユニット型である.
 
 ### レコード型
 
-&emsp;
+&emsp;<b>レコード</b> (record) はラベル付きの値の集合である.
+
+```sml
+- val taro = { name = "Taro", age = 25 };
+val taro = {age=25,name="Taro"} : {age:int, name:string}
+- #age taro
+val it = 25 : int
+```
+
+&emsp;上の例では, ラベルとして ``name`` と ``age`` を持つレコードを生成している. ここで作成したレコード ``taro`` の型は ``{ age: int, name: string }`` であり, 各要素を取り出すには ``#name`` や ``#age`` のような名前の関数 (セレクタ関数) を用いる.
 
 ### リスト型
 
