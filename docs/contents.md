@@ -379,6 +379,22 @@ val square = fn : int -> int
 val it = 25 : int
 ```
 
+関数式を用いると, ``map square [1, 2, 3, 4, 5]`` と等価な式を次のように書くこともできる.
+
+```sml
+- map (fn x => x * x) [1, 2, 3, 4, 5];
+val it = [1, 4, 9, 16, 25] : int list
+```
+
+階乗を求める関数 fact は, 関数式を用いると容易に実装できる. 再帰関数は関数式の中で左辺の名前を参照するため, 次のように ``rec`` キーワードが必要になる.
+
+```sml
+- val rec fact = fn 0 => 1 | n => n * fact (n - 1);
+val fact = fn : int -> int
+- fact 5
+val it = 120 : int
+```
+
 ### 部分適用
 
 &emsp;
