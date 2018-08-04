@@ -397,7 +397,16 @@ val it = 120 : int
 
 ### 部分適用
 
-&emsp;
+```sml
+- fun add x y = x + y;
+val add = fn : int -> int -> int
+- val addTwo = add 2;
+val addTwo = fn : int -> int
+- addTwo 3;
+val it = 5 : int
+```
+
+関数適用は左結合であるため, 例えば式 ``add 2 3`` は ``(add 2) 3`` のように評価される. ここで ``add 2`` は add 関数の**部分適用** (partial application) と呼ばれ, ``int -> int`` 型を持つ. addTwo 関数は, add 関数の部分適用を利用して定義されている.
 
 ### 中置演算子
 
