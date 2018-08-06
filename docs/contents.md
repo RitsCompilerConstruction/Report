@@ -877,8 +877,8 @@ sig
   val add : tkey * tval -> alist -> alist
   val find : tkey -> alist -> tval
 end
-  where type tkey = int      (* tkey は int と同じだよ *)
-  where type tval = string   (* tval は string と同じだよ *)
+  where type tkey = int      (* tkey は int と同じ *)
+  where type tval = string   (* tval は string と同じ *)
 
 structure Alist :> ALIST =   (* 不透明なシグネチャ制約 *)
 struct
@@ -926,8 +926,8 @@ end
 (* ファンクタ Alist の定義 *)
 functor Alist (eqtype tk type tv)
   :> ALIST                 (* 不透明なシグネチャ制約 *)
-  where type tkey = tk     (* tkey は tk と同じだよ *)
-  where type tval = tv  =  (* tval は tv と同じだよ *)
+  where type tkey = tk     (* tkey は tk と同じ *)
+  where type tval = tv  =  (* tval は tv と同じ *)
 struct
   exception AlistExn
 
